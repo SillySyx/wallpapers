@@ -2,9 +2,6 @@ use std::error::Error;
 use std::process::Command;
 use std::fs::read_dir;
 
-use rand::seq::SliceRandom;
-use rand::thread_rng;
-
 use crate::config::WallpapersConfig;
 
 pub fn change(config: WallpapersConfig) -> Result<(), Box<dyn Error>> {
@@ -68,13 +65,25 @@ fn get_images_in_folder(image_folder_path: &String) -> Result<Vec<String>, Box<d
     Ok(images)
 }
 
+fn random_number(min: usize, max: usize) -> Result<usize, Box<dyn Error>> {
+    let range = format!("{}-{}", min, max);
+
+    let output = Command::new("shuf")
+        .args(["-i", &range, "-n1"])
+        .output()?;
+
+    let value = String::from_utf8(output.stdout)?;
+    let number = value.trim().parse::<usize>()?;
+
+    Ok(number)
+}
+
 fn select_random_image(images: Vec<String>) -> Result<String, Box<dyn Error>> {
-    let mut rng = thread_rng();
+    let index = random_number(0, images.len())?;
 
-    let mut images = images;
-    images.shuffle(&mut rng);
+    if let Some(image) = images.get(index) {
+        return Ok(image.to_owned());
+    }
 
-    let image = images.first().unwrap();
-
-    Ok(image.to_owned())
+    Err(Box::from("Failed to get random image"))
 }
