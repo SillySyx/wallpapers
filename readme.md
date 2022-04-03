@@ -1,18 +1,22 @@
-# Configuration values
-Create file `.wallpapers` in home folder containing the following
+# Installation
+Download the latest release and extract the file to your preferred location.  
+Example: `~/.local/share/wallpapers`
+
+# Configuration
+Create file `~/.config/wallpapers/settings` containing the following
 ```
 Image folder=/path/to/images
 Duration=1800
 ```
 
 # Autostart
-If you don't have a easy way to app commands to autostart you can add the follow file `~/.config/autostart/Wallpapers.desktop`
+If you don't have a easy way to add commands to autostart you can add the follow file `~/.config/autostart/Wallpapers.desktop`
 ```
 [Desktop Entry]
 Type=Application
 Name=Wallpapers
 Description=Starts wallpapers app
-Exec=/path/to/bin/wallpapers run
+Exec=/preferred/installation/location/wallpapers run
 ```
 
 # Commands

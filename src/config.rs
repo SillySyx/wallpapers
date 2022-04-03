@@ -21,7 +21,7 @@ impl WallpapersConfig {
 
     pub fn load() -> Result<Self, Box<dyn Error>> {
         let user = get_current_user()?;
-        let config_path = format!("/home/{}/.wallpapers", user);
+        let config_path = format!("/home/{}/.config/wallpapers/settings", user);
 
         let data = std::fs::read(config_path)?;
         let content = String::from_utf8(data)?;
