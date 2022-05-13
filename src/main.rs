@@ -1,13 +1,10 @@
 mod commands;
+mod color_scheme;
 mod background;
 mod config;
 mod user;
 
 use std::error::Error;
-
-// Tray icon
-// https://github.com/iovxw/ksni
-// https://github.com/olback/tray-item-rs
 
 fn main() -> Result<(), Box<dyn Error>> {
     if commands::is("help") {

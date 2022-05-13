@@ -3,6 +3,7 @@ use std::process::Command;
 use std::fs::read_dir;
 
 use crate::config::WallpapersConfig;
+use crate::color_scheme::{get_color_scheme, ColorScheme};
 
 pub fn change(config: WallpapersConfig) -> Result<(), Box<dyn Error>> {
     let images = get_images_in_folder(&config.image_folder)?;
@@ -21,10 +22,16 @@ pub fn change(config: WallpapersConfig) -> Result<(), Box<dyn Error>> {
 fn set_background_image(image_folder: String, image: String) -> Result<(), Box<dyn Error>> {
     // gsettings set org.gnome.desktop.background picture-uri file:///path/to/your/image.png
 
+    let picture_uri = match get_color_scheme() {
+        Some(ColorScheme::Dark) => "picture-uri-dark",
+        Some(ColorScheme::Light) => "picture-uri",
+        _ => "picture-uri",
+    };
+
     let image_path = format!("file://{}/{}", image_folder, image);
 
     let _ = Command::new("gsettings")
-        .args(["set", "org.gnome.desktop.background", "picture-uri", &image_path])
+        .args(["set", "org.gnome.desktop.background", picture_uri, &image_path])
         .output()?;
 
     Ok(())
@@ -33,8 +40,14 @@ fn set_background_image(image_folder: String, image: String) -> Result<(), Box<d
 fn get_background_image() -> Result<String, Box<dyn Error>> {
     // gsettings get org.gnome.desktop.background picture-uri
 
+    let picture_uri = match get_color_scheme() {
+        Some(ColorScheme::Dark) => "picture-uri-dark",
+        Some(ColorScheme::Light) => "picture-uri",
+        _ => "picture-uri",
+    };
+
     let output = Command::new("gsettings")
-        .args(["get", "org.gnome.desktop.background", "picture-uri"])
+        .args(["get", "org.gnome.desktop.background", picture_uri])
         .output()?;
 
     let image_path = String::from_utf8(output.stdout)?;
