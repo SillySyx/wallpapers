@@ -92,11 +92,27 @@ fn random_number(min: usize, max: usize) -> Result<usize, Box<dyn Error>> {
 }
 
 fn select_random_image(images: Vec<String>) -> Result<String, Box<dyn Error>> {
-    let index = random_number(0, images.len())?;
+    let max_size = images.len() - 1;
+
+    let index = random_number(0, max_size)?;
 
     if let Some(image) = images.get(index) {
         return Ok(image.to_owned());
     }
 
     Err(Box::from("Failed to get random image"))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn should_be_able_to_select_random_image() {
+        let images = vec![String::from("one"), String::from("two"), String::from("three")];
+
+        let result = select_random_image(images);
+
+        assert!(result.is_ok());
+    }
 }
