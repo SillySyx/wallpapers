@@ -6,7 +6,11 @@ pub enum ColorScheme {
     Dark,
 }
 
-pub fn get_color_scheme() -> Option<ColorScheme> {
+pub fn get_color_scheme(override_color_scheme: &Option<String>) -> Option<ColorScheme> {
+    if let Some(color_scheme) = override_color_scheme {
+        return Some(parse_color_scheme(color_scheme));
+    }
+
     let output = Command::new("gsettings")
         .args(["get", "org.gnome.desktop.interface", "color-scheme"])
         .output();
@@ -21,11 +25,15 @@ pub fn get_color_scheme() -> Option<ColorScheme> {
         Err(_) => return None,
     };
 
-    if color_scheme == "'prefer-dark'" {
-        return Some(ColorScheme::Dark);
-    }
+    Some(parse_color_scheme(&color_scheme))
+}
 
-    Some(ColorScheme::Light)
+fn parse_color_scheme(color_scheme: &str) -> ColorScheme {
+    match color_scheme {
+        "'prefer-dark'" => ColorScheme::Dark,
+        "prefer-dark" => ColorScheme::Dark,
+        _ => ColorScheme::Light,
+    }
 }
 
 #[cfg(test)]
@@ -34,7 +42,7 @@ mod tests {
 
     #[test]
     fn should_be_able_to_read_color_scheme() {
-        let result = get_color_scheme();
+        let result = get_color_scheme(&None);
 
         assert_ne!(None, result);
     }

@@ -1,8 +1,8 @@
+mod home_folder;
 mod commands;
 mod color_scheme;
 mod background;
 mod config;
-mod user;
 
 use std::error::Error;
 

@@ -10,19 +10,19 @@ pub fn change(config: WallpapersConfig) -> Result<(), Box<dyn Error>> {
     let number_of_images = images.len();
     
     let image = select_random_image(images)?;
-    let current_image = get_background_image()?;
+    let current_image = get_background_image(&config.override_color_scheme)?;
     
     if image == current_image && number_of_images > 1 {
         return change(config);
     } 
 
-    set_background_image(config.image_folder, image)
+    set_background_image(config.image_folder, image, &config.override_color_scheme)
 }
 
-fn set_background_image(image_folder: String, image: String) -> Result<(), Box<dyn Error>> {
+fn set_background_image(image_folder: String, image: String, override_color_scheme: &Option<String>) -> Result<(), Box<dyn Error>> {
     // gsettings set org.gnome.desktop.background picture-uri file:///path/to/your/image.png
 
-    let picture_uri = match get_color_scheme() {
+    let picture_uri = match get_color_scheme(override_color_scheme) {
         Some(ColorScheme::Dark) => "picture-uri-dark",
         Some(ColorScheme::Light) => "picture-uri",
         _ => "picture-uri",
@@ -37,10 +37,10 @@ fn set_background_image(image_folder: String, image: String) -> Result<(), Box<d
     Ok(())
 }
 
-fn get_background_image() -> Result<String, Box<dyn Error>> {
+fn get_background_image(override_color_scheme: &Option<String>) -> Result<String, Box<dyn Error>> {
     // gsettings get org.gnome.desktop.background picture-uri
 
-    let picture_uri = match get_color_scheme() {
+    let picture_uri = match get_color_scheme(override_color_scheme) {
         Some(ColorScheme::Dark) => "picture-uri-dark",
         Some(ColorScheme::Light) => "picture-uri",
         _ => "picture-uri",
