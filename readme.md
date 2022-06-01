@@ -5,8 +5,9 @@ Example: `~/.local/share/wallpapers`
 # Configuration
 Create file `~/.config/wallpapers/settings` containing the following
 ```
-Image folder=/path/to/images
+Image folder=~/Pictures
 Duration=1800
+Override color scheme=prefer-light
 ```
 
 # Autostart
